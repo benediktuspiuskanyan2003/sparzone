@@ -3,13 +3,18 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
 import { useRouter } from 'expo-router';
 
-const LoginScreen = () => {
+const DaftarScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const router = useRouter();
 
-  const handleLogin = () => {
-    // Logika untuk login akan ditambahkan di sini
+  const handleDaftar = () => {
+    // Logika untuk daftar akan ditambahkan di sini
+    if (password !== confirmPassword) {
+      alert('Password tidak cocok!');
+      return;
+    }
     console.log('Email:', email);
     console.log('Password:', password);
   };
@@ -17,7 +22,7 @@ const LoginScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>Login Akun</Text>
+        <Text style={styles.title}>Buat Akun Baru</Text>
         <TextInput
           style={styles.input}
           placeholder="Masukkan Email Anda"
@@ -33,9 +38,16 @@ const LoginScreen = () => {
           onChangeText={setPassword}
           secureTextEntry
         />
-        <Button title="Login" onPress={handleLogin} />
-        <TouchableOpacity onPress={() => router.replace('/daftar')}>
-          <Text style={styles.linkText}>Belum punya akun? Daftar di sini</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Konfirmasi Password Anda"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          secureTextEntry
+        />
+        <Button title="Daftar" onPress={handleDaftar} />
+        <TouchableOpacity onPress={() => router.replace('/login')}>
+          <Text style={styles.linkText}>Sudah punya akun? Login di sini</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -73,4 +85,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default DaftarScreen;
