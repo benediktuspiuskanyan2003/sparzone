@@ -1,59 +1,87 @@
 
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, useWindowDimensions, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from 'expo-router';
-import { DrawerActions } from '@react-navigation/native';
 
-const PrivateHeader = () => {
-  const navigation = useNavigation();
+// The props can come from different navigators (Drawer or Tabs),
+// so we define a flexible interface for what we actually need.
+type HeaderProps = {
+  navigation?: {
+    toggleDrawer?: () => void;
+    [key: string]: any;
+  };
+  [key: string]: any;
+};
 
-  // Fungsi untuk membuka drawer/sidebar
-  const openDrawer = () => {
-    navigation.dispatch(DrawerActions.openDrawer());
-  }
+const PrivateHeader = (props: HeaderProps) => {
+  const { width } = useWindowDimensions();
+  const isMobile = width < 768;
+
+  // This function will be called when the menu icon is pressed.
+  const toggleDrawer = () => {
+    // We safely check if the function exists on the navigation prop before calling it.
+    if (props.navigation?.toggleDrawer) {
+      props.navigation.toggleDrawer();
+    }
+  };
 
   return (
     <View style={styles.headerContainer}>
-      {/* Tampilkan tombol menu hanya di platform native (iOS/Android) */}
-      {Platform.OS !== 'web' && (
-        <TouchableOpacity onPress={openDrawer} style={styles.menuButton}>
-          <Ionicons name="menu-outline" size={32} color="#333" />
+      <View style={styles.leftContainer}>
+        {/* On web/desktop, show the hamburger menu to toggle the drawer.
+            We also check if the toggleDrawer function is available. */}
+        {!isMobile && props.navigation?.toggleDrawer && (
+          <TouchableOpacity onPress={toggleDrawer} style={styles.menuButton}>
+            <Ionicons name="menu-outline" size={32} color="#333" />
+          </TouchableOpacity>
+        )}
+        <Image source={require('../assets/images/SparZone.jpg')} style={styles.logo} />
+      </View>
+      <View style={styles.rightContainer}>
+        <TouchableOpacity style={styles.iconButton}>
+          <Ionicons name="notifications-outline" size={24} color="#333" />
         </TouchableOpacity>
-      )}
-      
-      {/* Judul Aplikasi */}
-      <Text style={styles.headerTitle}>Sparzone</Text>
-      
-      {/* Placeholder kosong di sebelah kanan untuk menjaga judul tetap di tengah */}
-      <View style={styles.rightPlaceholder} />
+        <TouchableOpacity style={styles.profileButton}>
+          <Ionicons name="person-circle-outline" size={32} color="#333" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   headerContainer: {
-    height: 60,
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: 15,
+    height: 60,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+  leftContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  rightContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   menuButton: {
-    padding: 5,
+    marginRight: 15,
   },
-  rightPlaceholder: {
-    // Lebar dibuat sama dengan tombol menu agar judul seimbang
-    width: Platform.OS !== 'web' ? 32+10 : 0,
-  }
+  logo: {
+    width: 150,
+    height: 50,
+    resizeMode: 'contain',
+  },
+  iconButton: {
+    marginHorizontal: 10,
+  },
+  profileButton: {
+    marginLeft: 10,
+  },
 });
 
 export default PrivateHeader;

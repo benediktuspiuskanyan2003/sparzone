@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useAuth } from '../../context/AuthProvider';
@@ -6,7 +5,6 @@ import { useAuth } from '../../context/AuthProvider';
 const HomeScreen = () => {
   const { user } = useAuth(); // Dapatkan data pengguna
 
-  // KOMPONEN <PrivateHeader /> DAN IMPORT-NYA TELAH DIHAPUS
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
