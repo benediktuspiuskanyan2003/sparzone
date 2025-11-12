@@ -94,13 +94,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20, // Mengurangi padding untuk mobile
+    paddingHorizontal: 15, // Mengurangi padding untuk mobile
     borderBottomWidth: 1,
     borderBottomColor: '#cccccc',
   },
   logo: {
     height: 50, // Sedikit lebih kecil agar pas
-    width: 180,
+    width: 240,
     resizeMode: 'contain',
   },
   // Style untuk menu desktop
