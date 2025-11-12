@@ -3,9 +3,15 @@ import React, { useState } from 'react';
 import { View, StyleSheet, SafeAreaView, Image, Text, Pressable, useWindowDimensions, Modal, TouchableOpacity } from 'react-native';
 import { useFonts } from 'expo-font';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons'; // Menggunakan ikon untuk hamburger menu
+import { Ionicons } from '@expo/vector-icons';
 
-// Komponen Tombol Menu untuk Desktop (tidak berubah)
+// Definisikan tipe props untuk Header, termasuk fungsi scroll
+interface HeaderProps {
+  onScrollToFeatures?: () => void;
+  onScrollToTeams?: () => void;
+  onScrollToFields?: () => void;
+}
+
 type HeaderButtonProps = { text: string; onPress: () => void; };
 const HeaderButton = ({ text, onPress }: HeaderButtonProps) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -23,20 +29,24 @@ const HeaderButton = ({ text, onPress }: HeaderButtonProps) => {
   );
 };
 
-const Header = () => {
+// Terima props baru di komponen Header
+const Header: React.FC<HeaderProps> = ({ onScrollToFeatures, onScrollToTeams, onScrollToFields }) => {
   const [fontsLoaded] = useFonts({ 'Bebas Neue': require('../assets/fonts/BebasNeue-Regular.ttf'), });
   const router = useRouter();
-  const { width } = useWindowDimensions(); // Mendapatkan lebar layar
+  const { width } = useWindowDimensions();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   if (!fontsLoaded) { return null; }
 
-  const isMobile = width < 768; // Tentukan breakpoint untuk mobile
+  const isMobile = width < 768;
 
+  // Hubungkan tombol ke fungsi scroll dari props
   const menuItems = [
     { text: "Beranda", action: () => router.push('/') },
-    { text: "Lapangan", action: () => router.push('/') },
-    { text: "Tim", action: () => {} },
+    // Jika fungsi onScrollToFeatures ada, gunakan itu. Jika tidak, jangan lakukan apa-apa.
+    { text: "Fitur", action: onScrollToFeatures || (() => {}) },
+    { text: "Tim", action: onScrollToTeams || (() => {}) },
+    { text: "Lapangan", action: onScrollToFields || (() => {}) },
     { text: "Daftar", action: () => router.push('/daftar') },
     { text: "Login", action: () => router.push('/login') },
   ];
@@ -47,19 +57,16 @@ const Header = () => {
         <Image source={require('../assets/images/SparZone.jpg')} style={styles.logo} />
 
         {isMobile ? (
-          // Tampilan Mobile: Tombol Hamburger
           <TouchableOpacity onPress={() => setIsMenuOpen(true)} style={styles.hamburgerButton}>
             <Ionicons name="menu" size={32} color="#4A0072" />
           </TouchableOpacity>
         ) : (
-          // Tampilan Desktop: Menu Lengkap
           <View style={styles.menuContainer}>
             {menuItems.map(item => <HeaderButton key={item.text} text={item.text} onPress={item.action} />)}
           </View>
         )}
       </View>
 
-      {/* Modal untuk Menu Mobile */}
       <Modal
         visible={isMenuOpen}
         transparent={true}
@@ -74,7 +81,7 @@ const Header = () => {
                 style={styles.mobileMenuItem}
                 onPress={() => {
                   item.action();
-                  setIsMenuOpen(false); // Tutup menu setelah navigasi
+                  setIsMenuOpen(false);
                 }}
               >
                 <Text style={styles.mobileMenuText}>{item.text}</Text>
@@ -88,29 +95,26 @@ const Header = () => {
 };
 
 const styles = StyleSheet.create({
-  safeArea: { backgroundColor: '#fff', zIndex: 10 }, // zIndex agar header di atas konten lain
+  safeArea: { backgroundColor: '#fff', zIndex: 10 },
   header: {
     height: 70,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 15, // Mengurangi padding untuk mobile
+    paddingHorizontal: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#cccccc',
   },
   logo: {
-    height: 50, // Sedikit lebih kecil agar pas
+    height: 50,
     width: 240,
     resizeMode: 'contain',
   },
-  // Style untuk menu desktop
   menuContainer: { flexDirection: 'row', alignItems: 'center' },
   menuButton: { marginLeft: 20, padding: 8, borderRadius: 6 },
   menuButtonHover: { backgroundColor: '#4A0072' },
   menuText: { fontSize: 18, fontFamily: 'Bebas Neue', letterSpacing: 1.5, color: '#4A0072' },
   menuTextHover: { color: '#FFFFFF' },
-
-  // Style untuk menu mobile
   hamburgerButton: { padding: 10 },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)' },
   mobileMenuContainer: {

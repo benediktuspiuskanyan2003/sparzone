@@ -1,25 +1,18 @@
 
-# Expo
-.expo/
-
-# Node modules
-node_modules/
-
-# Metro bundler cache
-.metro-cache/
-
-# Keystore files (for Android signing)
-*.keystore
-
-# Environment variables
+# Berkas lingkungan
 .env
 
-# Build artifacts
-dist/
-web-build/
+# Direktori dependensi
+node_modules/
 
-# Logs
+# Berkas log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-lerna-debug.log*
+
+# Direktori build sementara Expo
+.expo/
+
+# Berkas build dan cache
+dist/
+.cache/
